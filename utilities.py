@@ -59,7 +59,8 @@ def load_data(img_paths, groundtruth_file):
     df_img = pd.concat([df_img_flattened, df_img_names], axis=1)
     df_img.set_index("image_name", inplace=True)
 
-    df_ground_truth = pd.read_csv(groundtruth_file, index_col=[0])
+    df_ground_truth = pd.read_csv(groundtruth_file)
+    df_ground_truth = df_ground_truth[['image_name', 'target']]
     df_ground_truth.set_index("image_name", inplace=True)
     df = pd.merge(df_img, df_ground_truth, how='inner', left_index=True, right_index=True)
     return df
@@ -88,7 +89,7 @@ def display_interesting_results(X, y_pred, y_actual, max=50):
             interesting_y_actual_list.append(y_actual_list[i])
 
     interesting_images = interesting_images.reshape(len(interesting_y_actual_list),128,128,3)
-    return display_results_internal(interesting_images, interesting_y_pred_list, interesting_y_actual_list)
+    return display_results_internal(interesting_images, interesting_y_pred_list, interesting_y_actual_list,max)
 
 def display_results_internal(images, y_pred_list, y_actual_list, max_num=50):
     num_images = min(len(y_actual_list),max_num)
