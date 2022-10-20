@@ -2,7 +2,7 @@ import pandas as pd # for data manipulation
 import numpy as np # for data manipulation
 import cv2 # for ingesting images
 import matplotlib.pyplot as plt # for showing images
-import os
+import os # for getting files from disk
 
 def random_state():
     return 42
@@ -94,7 +94,7 @@ def display_interesting_results(X, y_pred, y_actual, max=50):
 def display_results_internal(images, y_pred_list, y_actual_list, max_num=50):
     num_images = min(len(y_actual_list),max_num)
     cols = min(num_images,5)
-    rows = max(int(num_images/cols),1)
+    rows = max(int(num_images/cols),1) if cols != 0  else 0
 
     fig, axs = plt.subplots(rows, cols, sharey=False, tight_layout=True, figsize=(50,50), facecolor='white')
     n=0
@@ -105,8 +105,12 @@ def display_results_internal(images, y_pred_list, y_actual_list, max_num=50):
                 axs[i,j].matshow(images[n])
                 axs[i,j].set_title(title, size = 36)
             else:
-                axs[j].matshow(images[n])
-                axs[j].set_title(title, size = 36)
+                if (cols != 1):
+                    axs[j].matshow(images[n])
+                    axs[j].set_title(title, size = 36)
+                else:
+                    axs.matshow(images[n])
+                    axs.set_title(title, size = 36)
             n=n+1     
             if (max_num == n):
                 return plt
