@@ -1,1 +1,0 @@
-Time it took for LLE is 6.796306133270264 s
