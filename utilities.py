@@ -3,6 +3,7 @@ import numpy as np # for data manipulation
 import cv2 # for ingesting images
 import matplotlib.pyplot as plt # for showing images
 import os # for getting files from disk
+import threading # for parallelizing loading of data
 
 def random_state():
     return 42
@@ -120,3 +121,102 @@ def split_predictors_target(df):
     X = df.drop(columns = ['target']).copy()
     y = df['target']
     return X, y
+
+def slice_list(lst, n):
+    p = len(lst) // n
+    if len(lst)-p > 0:
+        return [lst[:p]] + slice_list(lst[p:], n-1)
+    else:
+        return [lst]
+
+def get_df(result_arr, index, img_paths, groundtruth_file, name, num_images_per_thread):
+    print("start loading " + name)
+    
+    num_images = len(img_paths)
+    num_threads = max(int(num_images/num_images_per_thread), 1)
+    
+    result = [None] * num_threads
+    threads = []
+    
+    # divide image paths into even chunks per thread
+    sliced_img_paths = slice_list(img_paths, num_threads) 
+    
+    # spawn threads
+    for i in range(num_threads):
+        t = threading.Thread(target=get_df_thread, args=(result, i, sliced_img_paths[i], groundtruth_file, name)) 
+        t.start()
+        threads.append(t)
+    
+    # wait for threads
+    for t in threads:
+        t.join()
+    
+    df = pd.DataFrame()
+    # combine results
+    for r in result:
+        if df.empty:
+            df = r
+        else:
+            df.append(r)
+    
+    print("done loading " + name)
+    result_arr[index] = df
+    return df
+
+def get_df_thread(result_arr, index, img_paths, groundtruth_file, name):
+    print("start thread #%d for %s" %(index, name))
+    
+    df = load_data(img_paths, groundtruth_file)
+    result_arr[index] = df
+    
+    print("finished thread #%d for %s" %(index, name))
+
+def load_train_test(img_paths_train, groundtruth_file_train, img_paths_test, groundtruth_file_test, option):
+    df_train = []
+    df_test = []
+
+    if option == "parallel_fusion":
+        one_thread_per_x_images = int((len(img_paths_train) + len(img_paths_test)) / 10)
+        print("Num images per thread %d"%one_thread_per_x_images)
+
+        result = [None] * 2
+        
+        t1 = threading.Thread(target=get_df, args=(result, 0, img_paths_train, groundtruth_file_train, "train", one_thread_per_x_images))
+        t2 = threading.Thread(target=get_df, args=(result, 1, img_paths_test, groundtruth_file_test, "test", one_thread_per_x_images)) 
+
+        t1.start()
+        t2.start()
+
+        t1.join()
+        t2.join()
+
+        df_train = result[0]
+        df_test = result[1]
+    elif option == "parallel_train_test":
+        result = [None] * 2
+        
+        t1 = threading.Thread(target=get_df_thread, args=(result, 0, img_paths_train, groundtruth_file_train, "train"))
+        t2 = threading.Thread(target=get_df_thread, args=(result, 1, img_paths_test, groundtruth_file_test, "test"))
+
+        t1.start()
+        t2.start()
+
+        t1.join()
+        t2.join()
+
+        df_train = result[0]
+        df_test = result[1]
+    elif option == "sequential_train_test_parallel_chunks": 
+        one_thread_per_x_images = int((len(img_paths_train) + len(img_paths_test)) / 10)
+        print("Num images per thread %d"%one_thread_per_x_images)
+
+        result = [None] * 2
+        df_train = get_df(result, 0, img_paths_train, groundtruth_file_train, "train", one_thread_per_x_images)
+        df_test = get_df(result, 1, img_paths_test, groundtruth_file_test, "test", one_thread_per_x_images)
+    elif option == "sequential":
+        df_train = load_data(img_paths_train, groundtruth_file_train)
+        df_test = load_data(img_paths_test, groundtruth_file_test)
+    else: 
+        print("Invalid option")
+
+    return df_train, df_test
