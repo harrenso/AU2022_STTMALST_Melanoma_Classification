@@ -157,7 +157,7 @@ def get_df(result_arr, index, img_paths, groundtruth_file, name, num_images_per_
         if df.empty:
             df = r
         else:
-            df.append(r)
+            df = pd.concat([df,r])
     
     print("done loading " + name)
     result_arr[index] = df
