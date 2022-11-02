@@ -68,4 +68,5 @@ dependencies:
   - pip:
     - tensorflow~=2.8.1
     - scikit-learn-intelex~=2021.5.0
+    - seaborn~=0.11.2
 prefix: /opt/anaconda-2022.05

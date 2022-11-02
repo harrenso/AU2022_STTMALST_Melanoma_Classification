@@ -1,9 +1,9 @@
-Make cluster enviroment on your PC 😎
+Make cluster environment on your PC 😎
 
 Step:
 1. Download .yml file from git
 2. Open terminal (in conda base enviroment)
-3. Paste: conda create env -f {PATH}/enviroments.yml
+3. Paste: conda env create -f {PATH}/environments.yml
 4. Press enter
 5. Keep calm and wait a minute
 6. You should have new conda enviroment called: cluster_env : )
