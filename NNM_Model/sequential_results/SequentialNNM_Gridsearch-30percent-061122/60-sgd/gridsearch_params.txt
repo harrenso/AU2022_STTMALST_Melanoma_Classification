@@ -1,0 +1,1 @@
+Randomized Search CV best params={'learning_rate': 0.0006154014789262348, 'n_hidden': 1, 'n_neurons': 87, 'optimizer_type': 'sgd'}

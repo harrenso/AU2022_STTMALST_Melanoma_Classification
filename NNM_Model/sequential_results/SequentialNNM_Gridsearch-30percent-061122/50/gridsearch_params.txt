@@ -1,0 +1,1 @@
+Randomized Search CV best params={'learning_rate': 0.00032983006724298584, 'n_hidden': 2, 'n_neurons': 88, 'optimizer_type': 'nadam'}
