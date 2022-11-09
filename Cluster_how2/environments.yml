@@ -71,4 +71,5 @@ dependencies:
     - scikit-learn-intelex~=2021.5.0
     - seaborn~=0.11.2
     - h5py~=3.7.0
+    - efficientnet~=1.1.1
 prefix: /opt/anaconda-2022.05

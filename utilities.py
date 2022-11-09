@@ -5,13 +5,16 @@ import matplotlib.pyplot as plt # for showing images
 import os # for getting files from disk
 import threading # for parallelizing loading of data
 
+default_img_pixel = 128
+depth = 3
+
 def random_state():
     return 42
 
-def unflatten_images_df(df):
+def unflatten_images_df(df,img_pixel=default_img_pixel):
     df_img = df.filter(regex='pixel*', axis=1)
     images = df_img.to_numpy() 
-    images = images.reshape((df.shape[0],128,128,3))
+    images = images.reshape((df.shape[0],img_pixel,img_pixel,depth))
     return images
 
 def flatten_images(img_data):
@@ -20,16 +23,16 @@ def flatten_images(img_data):
         img_data_flattened.append(img.flatten()) 
     return img_data_flattened
 
-def read_images(img_paths):
+def read_images(img_paths,img_pixel=default_img_pixel):
     img_data = []
     for img_path in img_paths:
         img = cv2.imread(img_path)[:,:,::-1] 
-        img = cv2.resize(img, (128, 128)) 
+        img = cv2.resize(img, (img_pixel, img_pixel)) 
         img_data.append(img) 
     return img_data
 
-def load_flattened_images(img_paths):
-    img_data = read_images(img_paths)
+def load_flattened_images(img_paths,img_pixel=default_img_pixel):
+    img_data = read_images(img_paths,img_pixel)
     img_data_flattened = flatten_images(img_data)
     img_data_flattened = np.array(img_data_flattened) / 255
     return img_data_flattened
@@ -50,8 +53,8 @@ def get_img_paths(folder, max_number):
             return image_paths
     return image_paths
 
-def load_data(img_paths, groundtruth_file):
-    flattened_images = load_flattened_images(img_paths)
+def load_data(img_paths, groundtruth_file, img_pixel=default_img_pixel):
+    flattened_images = load_flattened_images(img_paths, img_pixel)
     df_img_flattened = pd.DataFrame(flattened_images, dtype="float", columns = ['pixel' + str(i + 1) 
                                                              for i in range(flattened_images.shape[1])])
     
@@ -66,16 +69,16 @@ def load_data(img_paths, groundtruth_file):
     df = pd.merge(df_img, df_ground_truth, how='inner', left_index=True, right_index=True)
     return df
 
-def display_results(X, y_pred, y_actual, max=50):
-    images = unflatten_images_df(X)
+def display_results(X, y_pred, y_actual, max=50, img_pixel=default_img_pixel):
+    images = unflatten_images_df(X, img_pixel)
     
     y_pred_list = list(y_pred)
     y_actual_list = list(y_actual)
 
     return display_results_internal(images, y_pred_list, y_actual_list, max)
 
-def display_interesting_results(X, y_pred, y_actual, max=50):
-    images = unflatten_images_df(X)
+def display_interesting_results(X, y_pred, y_actual, max=50, img_pixel=default_img_pixel):
+    images = unflatten_images_df(X,img_pixel)
     y_pred_list = list(y_pred)
     y_actual_list = list(y_actual)
     
@@ -89,7 +92,7 @@ def display_interesting_results(X, y_pred, y_actual, max=50):
             interesting_y_pred_list.append(y_pred_list[i])
             interesting_y_actual_list.append(y_actual_list[i])
 
-    interesting_images = interesting_images.reshape(len(interesting_y_actual_list),128,128,3)
+    interesting_images = interesting_images.reshape(len(interesting_y_actual_list),img_pixel,img_pixel,depth)
     return display_results_internal(interesting_images, interesting_y_pred_list, interesting_y_actual_list,max)
 
 def display_results_internal(images, y_pred_list, y_actual_list, max_num=50):
@@ -129,7 +132,7 @@ def slice_list(lst, n):
     else:
         return [lst]
 
-def get_df(result_arr, index, img_paths, groundtruth_file, name, num_images_per_thread):
+def get_df(result_arr, index, img_paths, groundtruth_file, name, num_images_per_thread, img_pixel=default_img_pixel):
     print("start loading " + name)
     
     num_images = len(img_paths)
@@ -143,7 +146,7 @@ def get_df(result_arr, index, img_paths, groundtruth_file, name, num_images_per_
     
     # spawn threads
     for i in range(num_threads):
-        t = threading.Thread(target=get_df_thread, args=(result, i, sliced_img_paths[i], groundtruth_file, name)) 
+        t = threading.Thread(target=get_df_thread, args=(result, i, sliced_img_paths[i], groundtruth_file, name, img_pixel)) 
         t.start()
         threads.append(t)
     
@@ -163,15 +166,15 @@ def get_df(result_arr, index, img_paths, groundtruth_file, name, num_images_per_
     result_arr[index] = df
     return df
 
-def get_df_thread(result_arr, index, img_paths, groundtruth_file, name):
+def get_df_thread(result_arr, index, img_paths, groundtruth_file, name, img_pixel=default_img_pixel):
     print("start thread #%d for %s" %(index, name))
     
-    df = load_data(img_paths, groundtruth_file)
+    df = load_data(img_paths, groundtruth_file, img_pixel)
     result_arr[index] = df
     
     print("finished thread #%d for %s" %(index, name))
 
-def load_train_test(img_paths_train, groundtruth_file_train, img_paths_test, groundtruth_file_test, option):
+def load_train_test(img_paths_train, groundtruth_file_train, img_paths_test, groundtruth_file_test, option, img_pixel=default_img_pixel):
     df_train = []
     df_test = []
 
@@ -181,8 +184,8 @@ def load_train_test(img_paths_train, groundtruth_file_train, img_paths_test, gro
 
         result = [None] * 2
         
-        t1 = threading.Thread(target=get_df, args=(result, 0, img_paths_train, groundtruth_file_train, "train", one_thread_per_x_images))
-        t2 = threading.Thread(target=get_df, args=(result, 1, img_paths_test, groundtruth_file_test, "test", one_thread_per_x_images)) 
+        t1 = threading.Thread(target=get_df, args=(result, 0, img_paths_train, groundtruth_file_train, "train", one_thread_per_x_images, img_pixel))
+        t2 = threading.Thread(target=get_df, args=(result, 1, img_paths_test, groundtruth_file_test, "test", one_thread_per_x_images, img_pixel)) 
 
         t1.start()
         t2.start()
@@ -195,8 +198,8 @@ def load_train_test(img_paths_train, groundtruth_file_train, img_paths_test, gro
     elif option == "parallel_train_test":
         result = [None] * 2
         
-        t1 = threading.Thread(target=get_df_thread, args=(result, 0, img_paths_train, groundtruth_file_train, "train"))
-        t2 = threading.Thread(target=get_df_thread, args=(result, 1, img_paths_test, groundtruth_file_test, "test"))
+        t1 = threading.Thread(target=get_df_thread, args=(result, 0, img_paths_train, groundtruth_file_train, "train", img_pixel))
+        t2 = threading.Thread(target=get_df_thread, args=(result, 1, img_paths_test, groundtruth_file_test, "test", img_pixel))
 
         t1.start()
         t2.start()
@@ -211,11 +214,11 @@ def load_train_test(img_paths_train, groundtruth_file_train, img_paths_test, gro
         print("Num images per thread %d"%one_thread_per_x_images)
 
         result = [None] * 2
-        df_train = get_df(result, 0, img_paths_train, groundtruth_file_train, "train", one_thread_per_x_images)
-        df_test = get_df(result, 1, img_paths_test, groundtruth_file_test, "test", one_thread_per_x_images)
+        df_train = get_df(result, 0, img_paths_train, groundtruth_file_train, "train", one_thread_per_x_images, img_pixel)
+        df_test = get_df(result, 1, img_paths_test, groundtruth_file_test, "test", one_thread_per_x_images, img_pixel)
     elif option == "sequential":
-        df_train = load_data(img_paths_train, groundtruth_file_train)
-        df_test = load_data(img_paths_test, groundtruth_file_test)
+        df_train = load_data(img_paths_train, groundtruth_file_train, img_pixel)
+        df_test = load_data(img_paths_test, groundtruth_file_test, img_pixel)
     else: 
         print("Invalid option")
 
