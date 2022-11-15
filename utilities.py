@@ -69,16 +69,23 @@ def load_data(img_paths, groundtruth_file, img_pixel=default_img_pixel):
     df = pd.merge(df_img, df_ground_truth, how='inner', left_index=True, right_index=True)
     return df
 
-def display_results(X, y_pred, y_actual, max=50, img_pixel=default_img_pixel):
-    images = unflatten_images_df(X, img_pixel)
+def display_results(X, y_pred, y_actual, max=50, img_pixel=default_img_pixel, flat=True):
+    if flat:
+        images = unflatten_images_df(X, img_pixel)
+    else:
+        images = X
     
     y_pred_list = list(y_pred)
     y_actual_list = list(y_actual)
 
     return display_results_internal(images, y_pred_list, y_actual_list, max)
 
-def display_interesting_results(X, y_pred, y_actual, max=50, img_pixel=default_img_pixel):
-    images = unflatten_images_df(X,img_pixel)
+def display_interesting_results(X, y_pred, y_actual, max=50, img_pixel=default_img_pixel, flat=True):
+    if flat:
+        images = unflatten_images_df(X, img_pixel)
+    else:
+        images = X
+        
     y_pred_list = list(y_pred)
     y_actual_list = list(y_actual)
     
