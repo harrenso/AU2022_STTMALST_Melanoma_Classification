@@ -13,5 +13,4 @@ data/*
 export/*
 data1920/*
 data2020/*
-
-git-ignored-models/*.h5
+*.h5
