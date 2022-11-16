@@ -1,1 +1,0 @@
-{'learning_rate': 0.008339092654580042, 'n_hidden': 2, 'n_neurons': 38, 'optimizer_type': 'sgd'}
