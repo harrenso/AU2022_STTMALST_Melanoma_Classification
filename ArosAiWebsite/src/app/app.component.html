@@ -6,13 +6,5 @@
   </div>
   <div class="imagePreview">
     <img class="image" [src]="url" *ngIf="url"><br/>
-    <button
-      mat-flat-button
-      color="primary"
-      (click)="uploadFiles()"
-    >
-      Upload
-    </button>
+    <button mat-flat-button (click)="predict()">Predict</button>
   </div>
-
-
