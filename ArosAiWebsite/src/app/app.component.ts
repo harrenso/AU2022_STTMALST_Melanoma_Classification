@@ -1,5 +1,4 @@
-import { Component } from '@angular/core';
-import {Observable} from "rxjs";
+import {Component} from '@angular/core';
 import {BackendService} from "./backend.service";
 
 @Component({
@@ -8,26 +7,22 @@ import {BackendService} from "./backend.service";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  selectedFiles?: FileList;
-  selectedFileNames: string[] = [];
+  selectedFile?: File;
 
   msg: any;
   url: any;
 
-  constructor(private service : BackendService ) {
-  }
-
-  uploadFiles() {
-
+  constructor(private service: BackendService) {
   }
 
 
   onFileSelect(event: any) {
     console.log(event);
 
-
-    var reader = new FileReader();
+    const reader = new FileReader();
+    this.selectedFile = event.target.files[0];
     reader.readAsDataURL(event.target.files[0]);
+    
 
     reader.onload = (_event) => {
       this.msg = "";
@@ -36,11 +31,10 @@ export class AppComponent {
   }
 
 
-
   predict() {
-    let file : undefined | null | File = this.selectedFiles?.item(0)
-    if (file) {
-      this.service.predict(file);
+    console.log(this.selectedFile)
+    if (this.selectedFile) {
+      this.service.predict(this.selectedFile);
     }
   }
 }
