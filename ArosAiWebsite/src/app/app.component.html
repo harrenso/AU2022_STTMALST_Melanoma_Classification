@@ -1,22 +1,18 @@
-  <div>
+  <div class="mainDIV">
 
-      <button
-        mat-flat-button
-        color="primary"
-        [disabled]="!selectedFiles"
-        (click)="uploadFiles()"
-      >
-        Upload
-      </button>
-
-<!--    <input-->
-<!--      type="file"-->
-<!--      id="fileInput"-->
-<!--      name="fileInput"-->
-<!--      accept="image/*"-->
-<!--      (change)="selectFiles($event)"-->
-<!--    />-->
 
     <button type="button" mat-flat-button (click)="fileInput.click()">Choose pic</button>
     <input hidden="hidden" type="file" accept="image/*" (change)="onFileSelect($event)" #fileInput>
   </div>
+  <div class="imagePreview">
+    <img class="image" [src]="url" *ngIf="url"><br/>
+    <button
+      mat-flat-button
+      color="primary"
+      (click)="uploadFiles()"
+    >
+      Upload
+    </button>
+  </div>
+
+
