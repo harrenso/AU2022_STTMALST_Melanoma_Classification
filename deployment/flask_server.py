@@ -120,7 +120,7 @@ def explain():
 			data["success"] = True
 
 	response = flask.jsonify(data)
-	response.headers.add('Access-Control-Allow-Osrigin', '*')
+	response.headers.add('Access-Control-Allow-Origin', '*')
 	# return the data dictionary as a JSON response
 	return response
 

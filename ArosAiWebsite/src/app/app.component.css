@@ -2,6 +2,10 @@
   height: 500px;
 }
 
-div{
+div {
   text-align: center;
+}
+
+.spinner {
+  margin:0 auto;
 }

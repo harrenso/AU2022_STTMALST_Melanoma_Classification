@@ -9,8 +9,8 @@ import {BackendService} from "./backend.service";
 export class AppComponent {
   selectedFile?: File;
 
-  msg: any;
-  url: any;
+  url?: any = null;
+  response? : any = null;
 
   constructor(private service: BackendService) {
   }
@@ -22,10 +22,9 @@ export class AppComponent {
     const reader = new FileReader();
     this.selectedFile = event.target.files[0];
     reader.readAsDataURL(event.target.files[0]);
-    
+
 
     reader.onload = (_event) => {
-      this.msg = "";
       this.url = reader.result;
     }
   }
@@ -34,7 +33,11 @@ export class AppComponent {
   predict() {
     console.log(this.selectedFile)
     if (this.selectedFile) {
-      this.service.predict(this.selectedFile);
+      this.service.predict(this.selectedFile)
+        .subscribe(
+          data => this.response = data,
+          error => console.log(error)
+        )
     }
   }
 }

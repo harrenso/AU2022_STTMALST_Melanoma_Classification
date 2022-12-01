@@ -1,10 +1,10 @@
   <div class="mainDIV">
-
-
-    <button type="button" mat-flat-button (click)="fileInput.click()">Choose pic</button>
+    <button type="button" mat-flat-button color="primary" (click)="fileInput.click()">Choose pic</button>
     <input hidden="hidden" type="file" accept="image/*" (change)="onFileSelect($event)" #fileInput>
   </div>
-  <div class="imagePreview">
-    <img class="image" [src]="url" *ngIf="url"><br/>
-    <button mat-flat-button (click)="predict()">Predict</button>
+  <div class="imagePreview" *ngIf="selectedFile">
+    <mat-spinner *ngIf="!url" class="spinner"></mat-spinner>
+    <img class="image" [src]="url" *ngIf="url" alt="your uploaded picture"><br/>
+    <button mat-flat-button color="primary" (click)="predict()">Predict</button>
+    <div *ngIf="response">{{ response.probability }}</div>
   </div>

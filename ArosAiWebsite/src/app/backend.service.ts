@@ -14,10 +14,6 @@ export class BackendService {
     console.log("hi")
     let formData:FormData = new FormData();
     formData.append('image', file, file.name);
-    this.http.post(`${this.url}/predict`, formData)
-      .subscribe(
-        data => console.log('success' + data),
-        error => console.log(error)
-      )
+    return this.http.post(`${this.url}/predict`, formData);
   }
 }
