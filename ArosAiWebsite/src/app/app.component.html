@@ -8,9 +8,9 @@
            (change)="onFileSelect($event)" #fileInput>
   </div>
   <div *ngIf="selectedFile">
-    <mat-spinner *ngIf="!url" class="spinner"></mat-spinner>
-    <div *ngIf="url">
-      <img class="image" [src]="url"  alt="your uploaded picture"><br/>
+    <mat-spinner *ngIf="!uploaded_image_url" class="spinner"></mat-spinner>
+    <div *ngIf="uploaded_image_url">
+      <img class="image" [src]="uploaded_image_url" alt="your uploaded picture"><br/>
       <button mat-flat-button color="primary"
               (click)="predict()"
               disabled="{{loading_response_probability || loading_response_explain}}">
@@ -25,6 +25,9 @@
                 disabled="{{loading_response_explain}}">
           Explain
         </button>
+        <div  *ngIf="!loading_response_explain && response_explain">
+          <img class="image" [src]="response_explain" alt="your explained picture"><br/>
+        </div>
         <mat-spinner *ngIf="loading_response_explain" class="spinner"></mat-spinner>
       </div>
       <mat-spinner *ngIf="loading_response_probability" class="spinner"></mat-spinner>

@@ -19,6 +19,6 @@ export class BackendService {
   explain(file: File) {
     let formData:FormData = new FormData();
     formData.append('image', file, file.name);
-    return this.http.post(`${this.url}/explain`, formData);
+    return this.http.post(`${this.url}/explain`, formData, { responseType: 'blob' });
   }
 }

@@ -7,40 +7,37 @@ import {BackendService} from "./backend.service";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  // user input
   selectedFile?: File;
-
-  url?: any = null;
+  uploaded_image_url?: any = null;
 
   // predict
   response_probability? : any = null;
   loading_response_probability : boolean = false;
 
-  // predict
+  // explain
   response_explain? : any = null;
   loading_response_explain : boolean = false;
 
-  constructor(private service: BackendService) {
-  }
-
+  constructor(private service: BackendService) { }
 
   onFileSelect(event: any) {
-    console.log(event);
+    this.uploaded_image_url = null;
+    this.response_probability = null;
+    this.response_explain = null;
 
     const reader = new FileReader();
     this.selectedFile = event.target.files[0];
     reader.readAsDataURL(event.target.files[0]);
 
-
     reader.onload = (_event) => {
-      this.url = reader.result;
+      this.uploaded_image_url = reader.result;
     }
   }
 
-
   predict() {
-    console.log(this.selectedFile)
-    this.loading_response_probability = true;
     if (this.selectedFile) {
+      this.loading_response_probability = true;
       this.service.predict(this.selectedFile)
         .subscribe(
           data => {
@@ -56,15 +53,17 @@ export class AppComponent {
   }
 
   explain() {
-    console.log(this.selectedFile)
-    this.loading_response_explain = true;
     if (this.selectedFile) {
+      this.loading_response_explain = true;
       this.service.explain(this.selectedFile)
         .subscribe(
           data => {
-            this.response_explain = data;
-            console.log(data)
-            this.loading_response_explain = false;
+            const reader = new FileReader();
+            reader.readAsDataURL(data);
+            reader.onload = (_event) =>  {
+              this.response_explain = reader.result;
+              this.loading_response_explain = false;
+            }
           },
           error => {
             console.log(error);
