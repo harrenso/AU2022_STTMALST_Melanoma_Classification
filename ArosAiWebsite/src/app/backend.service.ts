@@ -11,9 +11,14 @@ export class BackendService {
   constructor(private http: HttpClient) { }
 
   predict(file: File) {
-    console.log("hi")
     let formData:FormData = new FormData();
     formData.append('image', file, file.name);
     return this.http.post(`${this.url}/predict`, formData);
+  }
+
+  explain(file: File) {
+    let formData:FormData = new FormData();
+    formData.append('image', file, file.name);
+    return this.http.post(`${this.url}/explain`, formData);
   }
 }

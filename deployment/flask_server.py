@@ -91,10 +91,14 @@ def predict():
 			output = io.BytesIO()
 			FigureCanvas(plt.gcf()).print_png(output)
 
-			return Response(output.getvalue(), mimetype='image/png')
+			response = Response(output.getvalue(), mimetype='image/png')
+			response.headers.add('Access-Control-Allow-Origin', '*')
+			return response
 
+	response = flask.jsonify(data)
+	response.headers.add('Access-Control-Allow-Origin', '*')
 	# return the data dictionary as a JSON response
-	return flask.jsonify(data)
+	return response
 
 @app.route("/predict", methods=["POST"])
 def explain():

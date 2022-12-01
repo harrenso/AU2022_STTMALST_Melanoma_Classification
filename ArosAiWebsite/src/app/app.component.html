@@ -1,10 +1,32 @@
   <div class="mainDIV">
-    <button type="button" mat-flat-button color="primary" (click)="fileInput.click()">Choose pic</button>
-    <input hidden="hidden" type="file" accept="image/*" (change)="onFileSelect($event)" #fileInput>
+    <button type="button" mat-flat-button color="primary"
+            (click)="fileInput.click()"
+            disabled="{{loading_response_probability || loading_response_explain}}">
+      Choose a picture
+    </button>
+    <input hidden="hidden" type="file" accept="image/*"
+           (change)="onFileSelect($event)" #fileInput>
   </div>
-  <div class="imagePreview" *ngIf="selectedFile">
+  <div *ngIf="selectedFile">
     <mat-spinner *ngIf="!url" class="spinner"></mat-spinner>
-    <img class="image" [src]="url" *ngIf="url" alt="your uploaded picture"><br/>
-    <button mat-flat-button color="primary" (click)="predict()">Predict</button>
-    <div *ngIf="response">{{ response.probability }}</div>
+    <div *ngIf="url">
+      <img class="image" [src]="url"  alt="your uploaded picture"><br/>
+      <button mat-flat-button color="primary"
+              (click)="predict()"
+              disabled="{{loading_response_probability || loading_response_explain}}">
+        Predict
+      </button>
+      <div *ngIf="response_probability && !loading_response_probability">
+        <div>
+          Probability of melanoma {{ response_probability.probability | percent }}
+        </div>
+        <button mat-flat-button color="primary"
+                (click)="explain()"
+                disabled="{{loading_response_explain}}">
+          Explain
+        </button>
+        <mat-spinner *ngIf="loading_response_explain" class="spinner"></mat-spinner>
+      </div>
+      <mat-spinner *ngIf="loading_response_probability" class="spinner"></mat-spinner>
+    </div>
   </div>
