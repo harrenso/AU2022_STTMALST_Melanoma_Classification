@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import {Observable} from "rxjs";
+import {BackendService} from "./backend.service";
 
 @Component({
   selector: 'app-root',
@@ -7,7 +8,6 @@ import {Observable} from "rxjs";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'ArosAiWebsite';
   selectedFiles?: FileList;
   selectedFileNames: string[] = [];
 
@@ -16,6 +16,9 @@ export class AppComponent {
 
   previews: string[] = [];
   imageInfos?: Observable<any>;
+
+  constructor(private service : BackendService ) {
+  }
 
   uploadFiles() {
 
@@ -47,5 +50,14 @@ export class AppComponent {
 
   onFileSelect(event: any) {
     console.log(event);
+  }
+
+
+
+  predict() {
+    let file : undefined | null | File = this.selectedFiles?.item(0)
+    if (file) {
+      this.service.predict(file);
+    }
   }
 }

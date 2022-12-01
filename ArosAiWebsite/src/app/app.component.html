@@ -1,4 +1,4 @@
-  <div>
+ <div>
 
       <button
         mat-flat-button
@@ -19,4 +19,8 @@
 
     <button type="button" mat-flat-button (click)="fileInput.click()">Choose pic</button>
     <input hidden="hidden" type="file" accept="image/*" (change)="onFileSelect($event)" #fileInput>
-  </div>
+
+   <button mat-flat-button (click)="predict()">Predict</button>
+ </div>
+
+

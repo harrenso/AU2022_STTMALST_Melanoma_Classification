@@ -119,8 +119,10 @@ def explain():
 			# indicate that the request was a success
 			data["success"] = True
 
+	response = flask.jsonify(data)
+	response.headers.add('Access-Control-Allow-Osrigin', '*')
 	# return the data dictionary as a JSON response
-	return flask.jsonify(data)
+	return response
 
 # if this is the main thread of execution first load the model and
 # then start the server
