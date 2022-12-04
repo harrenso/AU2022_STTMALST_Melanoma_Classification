@@ -13,8 +13,6 @@ export class AppComponent {
   selectedFile?: File;
   uploaded_image_url?: any = null;
 
-  photo_flag = false
-  file_flag = false
   pic_taken_flag = false
 
   // predict
@@ -39,8 +37,6 @@ export class AppComponent {
     console.log(event.target.files[0])
     reader.onload = (_event) => {
       this.uploaded_image_url = reader.result;
-      this.file_flag = true
-      this.photo_flag = false
       this.pic_taken_flag = true
       console.log("file: " + this.uploaded_image_url)
     }
@@ -87,26 +83,18 @@ export class AppComponent {
 
 
   private trigger: Subject<any> = new Subject();
-  public webcamImage!: WebcamImage; // do we need this?
-  sysImage: any = ''; // do we need this?
-  xd: any = '' // do we need this?
-
+  access_camera_flag = false;
   public getSnapshot(): void {
     this.trigger.next(void 0);
   }
 
   public captureImg(webcamImage: any): void {
-    this.webcamImage = webcamImage;
-    this.sysImage = webcamImage!.imageAsDataUrl;
     this.saveWebCamPictureAsFile(webcamImage)
     let reader = new FileReader()
     if (this.selectedFile) {
       reader.readAsDataURL(this.selectedFile)
       reader.onload = (_event) => {
-        this.xd = reader.result;
-        this.uploaded_image_url = reader.result // this works  so we dont need two divs (party emoji)
-        this.photo_flag = true
-        this.file_flag = false // do we still need these flags?
+        this.uploaded_image_url = reader.result
         this.pic_taken_flag =true
       }
     }
@@ -131,7 +119,10 @@ export class AppComponent {
 
   redoPhoto() {
     this.pic_taken_flag = false
-    this.photo_flag = false
     this.selectedFile = new File([], '')
+  }
+
+  accessCamera(){
+    this.access_camera_flag = true
   }
 }
