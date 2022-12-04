@@ -15,7 +15,7 @@ export class AppComponent {
 
   photo_flag = false
   file_flag = false
-  pic_taken=false
+  pic_taken_flag = false
 
   // predict
   response_probability?: any = null;
@@ -41,7 +41,7 @@ export class AppComponent {
       this.uploaded_image_url = reader.result;
       this.file_flag = true
       this.photo_flag = false
-      this.pic_taken = true
+      this.pic_taken_flag = true
       console.log("file: " + this.uploaded_image_url)
     }
   }
@@ -86,31 +86,27 @@ export class AppComponent {
 
 
   private trigger: Subject<any> = new Subject();
-  public webcamImage!: WebcamImage;
-  sysImage: any = '';
-  xd: any = ''
+  takenImage: any = '';
 
   public getSnapshot(): void {
     this.trigger.next(void 0);
   }
 
   public captureImg(webcamImage: any): void {
-    this.webcamImage = webcamImage;
-    this.sysImage = webcamImage!.imageAsDataUrl;
+    this.takenImage = webcamImage!.imageAsDataUrl;
 
-    let photo = new File([this.sysImage], 'captured_photo', {type: 'image/jpeg', lastModified: Date.now()})
+    this.selectedFile = new File([this.takenImage], 'captured_photo', {type: 'image/jpeg', lastModified: Date.now()})
     let reader = new FileReader()
-    this.selectedFile = photo
-    reader.readAsDataURL(photo)
+    reader.readAsDataURL(this.selectedFile)
+    console.log(this.selectedFile)
     reader.onload = (_event) => {
-      this.xd = reader.result;
       this.uploaded_image_url = reader.result
       this.photo_flag = true
       this.file_flag = false
-      this.pic_taken=true
-      console.log(this.uploaded_image_url)
+      this.pic_taken_flag = true
+      console.log("photo: " + this.uploaded_image_url)
     }
-    console.info('got webcam image', this.xd);
+    console.info('got webcam image', this.uploaded_image_url);
   }
 
   public get invokeObservable(): Observable<any> {
@@ -118,8 +114,8 @@ export class AppComponent {
   }
 
   redoPhoto() {
-    this.pic_taken=false
-    this.photo_flag=false
-    this.selectedFile = new File([],'')
+    this.pic_taken_flag = false
+    this.photo_flag = false
+    this.selectedFile = new File([], '')
   }
 }
