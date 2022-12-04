@@ -6,6 +6,11 @@
     </button>
     <input hidden="hidden" type="file" accept="image/*"
            (change)="onFileSelect($event)" #fileInput>
+
+    <button  (click)="getSnapshot()">
+      Capture Image
+    </button>
+
   </div>
   <div *ngIf="selectedFile">
     <mat-spinner *ngIf="!uploaded_image_url" class="spinner"></mat-spinner>
@@ -31,5 +36,21 @@
         <mat-spinner *ngIf="loading_response_explain" class="spinner"></mat-spinner>
       </div>
       <mat-spinner *ngIf="loading_response_probability" class="spinner"></mat-spinner>
+    </div>
+
+
+  </div>
+
+  <div class="container mt-5">
+    <h2>Angular Webcam Capture Image from Camera</h2>
+    <div class="col-md-12">
+      <webcam
+        [trigger]="invokeObservable"
+        (imageCapture)="captureImg($event)"
+      ></webcam>
+    </div>
+    <div class="col-12">
+      <div id="results">Your taken image manifests here...</div>
+      <img [src]="webcamImage?.imageAsDataUrl" height="400px" />
     </div>
   </div>

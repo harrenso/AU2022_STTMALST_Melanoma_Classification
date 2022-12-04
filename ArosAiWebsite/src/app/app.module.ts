@@ -7,7 +7,7 @@ import {MatInputModule} from "@angular/material/input";
 import {MatButtonModule} from "@angular/material/button";
 import {HttpClientModule} from "@angular/common/http";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
-
+import {WebcamModule} from "ngx-webcam";
 @NgModule({
   declarations: [
     AppComponent
@@ -19,7 +19,8 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
     MatToolbarModule,
     MatInputModule,
     MatButtonModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    WebcamModule
   ],
   providers: [],
   bootstrap: [AppComponent]
