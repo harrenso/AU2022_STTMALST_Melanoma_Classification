@@ -22,8 +22,7 @@
     <mat-spinner *ngIf="!uploaded_image_url" class="spinner"></mat-spinner>
     <div *ngIf="uploaded_image_url">
       <button *ngIf="pic_taken && photo_flag" (click)="redoPhoto()">Redo photo</button>
-      <img *ngIf="file_flag" class="image" [src]="uploaded_image_url" alt="your uploaded picture"><br/>
-      <img *ngIf="photo_flag" class="image" [src]="webcamImage?.imageAsDataUrl" alt="your taken picture"><br/>
+      <img  class="image" [src]="uploaded_image_url" alt="your uploaded picture"><br/>
       <button mat-flat-button color="primary"
               (click)="predict()"
               disabled="{{loading_response_probability || loading_response_explain}}">

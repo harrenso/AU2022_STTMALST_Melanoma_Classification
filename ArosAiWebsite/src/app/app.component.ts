@@ -48,6 +48,7 @@ export class AppComponent {
 
   predict() {
     if (this.selectedFile) {
+      console.log(this.selectedFile)
       this.loading_response_probability = true;
       this.service.predict(this.selectedFile)
         .subscribe(
@@ -86,9 +87,9 @@ export class AppComponent {
 
 
   private trigger: Subject<any> = new Subject();
-  public webcamImage!: WebcamImage;
-  sysImage: any = '';
-  xd: any = ''
+  public webcamImage!: WebcamImage; // do we need this?
+  sysImage: any = ''; // do we need this?
+  xd: any = '' // do we need this?
 
   public getSnapshot(): void {
     this.trigger.next(void 0);
@@ -97,20 +98,31 @@ export class AppComponent {
   public captureImg(webcamImage: any): void {
     this.webcamImage = webcamImage;
     this.sysImage = webcamImage!.imageAsDataUrl;
-
-    let photo = new File([this.sysImage], 'captured_photo', {type: 'image/jpeg', lastModified: Date.now()})
+    this.saveWebCamPictureAsFile(webcamImage)
     let reader = new FileReader()
-    this.selectedFile = photo
-    reader.readAsDataURL(photo)
-    reader.onload = (_event) => {
-      this.xd = reader.result;
-      this.uploaded_image_url = reader.result
-      this.photo_flag = true
-      this.file_flag = false
-      this.pic_taken=true
-      console.log(this.uploaded_image_url)
+    if (this.selectedFile) {
+      reader.readAsDataURL(this.selectedFile)
+      reader.onload = (_event) => {
+        this.xd = reader.result;
+        this.uploaded_image_url = reader.result // this works  so we dont need two divs (party emoji)
+        this.photo_flag = true
+        this.file_flag = false // do we still need these flags?
+        this.pic_taken=true
+      }
     }
-    console.info('got webcam image', this.xd);
+  }
+
+  saveWebCamPictureAsFile(webcamImage: WebcamImage) {
+    const arr = webcamImage.imageAsDataUrl.split(",");
+    // @ts-ignore
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    this.selectedFile = new File([u8arr], "uploaded image", { type: 'image/jpeg' })
   }
 
   public get invokeObservable(): Observable<any> {
