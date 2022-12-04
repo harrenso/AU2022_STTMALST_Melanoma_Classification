@@ -15,7 +15,7 @@ export class AppComponent {
 
   photo_flag = false
   file_flag = false
-  pic_taken=false
+  pic_taken_flag = false
 
   // predict
   response_probability?: any = null;
@@ -41,7 +41,7 @@ export class AppComponent {
       this.uploaded_image_url = reader.result;
       this.file_flag = true
       this.photo_flag = false
-      this.pic_taken = true
+      this.pic_taken_flag = true
       console.log("file: " + this.uploaded_image_url)
     }
   }
@@ -107,7 +107,7 @@ export class AppComponent {
         this.uploaded_image_url = reader.result // this works  so we dont need two divs (party emoji)
         this.photo_flag = true
         this.file_flag = false // do we still need these flags?
-        this.pic_taken=true
+        this.pic_taken_flag =true
       }
     }
   }
@@ -130,8 +130,8 @@ export class AppComponent {
   }
 
   redoPhoto() {
-    this.pic_taken=false
-    this.photo_flag=false
-    this.selectedFile = new File([],'')
+    this.pic_taken_flag = false
+    this.photo_flag = false
+    this.selectedFile = new File([], '')
   }
 }
