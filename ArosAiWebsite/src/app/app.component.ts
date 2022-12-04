@@ -13,15 +13,20 @@ export class AppComponent {
   selectedFile?: File;
   uploaded_image_url?: any = null;
 
+  photo_flag = false
+  file_flag = false
+  pic_taken=false
+
   // predict
-  response_probability? : any = null;
-  loading_response_probability : boolean = false;
+  response_probability?: any = null;
+  loading_response_probability: boolean = false;
 
   // explain
-  response_explain? : any = null;
-  loading_response_explain : boolean = false;
+  response_explain?: any = null;
+  loading_response_explain: boolean = false;
 
-  constructor(private service: BackendService) { }
+  constructor(private service: BackendService) {
+  }
 
   onFileSelect(event: any) {
 
@@ -34,7 +39,10 @@ export class AppComponent {
     console.log(event.target.files[0])
     reader.onload = (_event) => {
       this.uploaded_image_url = reader.result;
-      console.log("file: "+this.uploaded_image_url)
+      this.file_flag = true
+      this.photo_flag = false
+      this.pic_taken = true
+      console.log("file: " + this.uploaded_image_url)
     }
   }
 
@@ -63,7 +71,7 @@ export class AppComponent {
           data => {
             const reader = new FileReader();
             reader.readAsDataURL(data);
-            reader.onload = (_event) =>  {
+            reader.onload = (_event) => {
               this.response_explain = reader.result;
               this.loading_response_explain = false;
             }
@@ -77,31 +85,41 @@ export class AppComponent {
   }
 
 
-
   private trigger: Subject<any> = new Subject();
   public webcamImage!: WebcamImage;
-  sysImage:any = '';
-  xd:any=''
+  sysImage: any = '';
+  xd: any = ''
+
   public getSnapshot(): void {
     this.trigger.next(void 0);
   }
+
   public captureImg(webcamImage: any): void {
     this.webcamImage = webcamImage;
     this.sysImage = webcamImage!.imageAsDataUrl;
 
-    let photo = new File([this.sysImage], 'captured_photo', { type: 'image/jpeg', lastModified:Date.now()})
+    let photo = new File([this.sysImage], 'captured_photo', {type: 'image/jpeg', lastModified: Date.now()})
     let reader = new FileReader()
     this.selectedFile = photo
     reader.readAsDataURL(photo)
     reader.onload = (_event) => {
       this.xd = reader.result;
       this.uploaded_image_url = reader.result
+      this.photo_flag = true
+      this.file_flag = false
+      this.pic_taken=true
       console.log(this.uploaded_image_url)
     }
     console.info('got webcam image', this.xd);
   }
+
   public get invokeObservable(): Observable<any> {
     return this.trigger.asObservable();
   }
 
+  redoPhoto() {
+    this.pic_taken=false
+    this.photo_flag=false
+    this.selectedFile = new File([],'')
+  }
 }
