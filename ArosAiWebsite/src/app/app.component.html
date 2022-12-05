@@ -25,27 +25,24 @@
   </div>
 
   <!-- Results etc. -->
-  <div *ngIf="selectedFile && pic_taken_flag">
-    <mat-spinner *ngIf="!uploaded_image_url" class="spinner"></mat-spinner>
-    <div *ngIf="uploaded_image_url">
+  <div *ngIf="unCroppedSelectedFile && pic_taken_flag">
+    <mat-spinner *ngIf="!unCroppedImageUrl" class="spinner"></mat-spinner>
+    <div *ngIf="unCroppedImageUrl">
 
 
       <h5>Crop Image</h5>
       <image-cropper class="image"
-                     [imageFile]="selectedFile"
+                     [imageFile]="unCroppedSelectedFile"
                      [maintainAspectRatio]="true"
                      [aspectRatio]="1 / 1"
                      [resizeToWidth]="300"
                      format="jpeg"
                      (imageCropped)="cropImg($event)"
-                     (imageLoaded)="imgLoad()"
-                     (cropperReady)="initCropper()"
-                     (loadImageFailed)="imgFailed()"
                      [autoCrop]="true"
       ></image-cropper>
       <div>
         <h5>Preview</h5>
-        <img [src]="cropImgPreview" />
+        <img [src]="croppedImageUrl" />
       </div>
 
 <!--      <img class="image" [src]="uploaded_image_url" alt="your uploaded picture"><br/>-->

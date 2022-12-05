@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {BackendService} from "./backend.service";
 import {Observable, Subject} from "rxjs";
-import {WebcamImage} from "ngx-webcam";
 import {ImageCroppedEvent} from "ngx-image-cropper";
 
 @Component({
@@ -11,10 +10,11 @@ import {ImageCroppedEvent} from "ngx-image-cropper";
 })
 export class AppComponent implements OnInit {
   // user input
-  selectedFile?: File;
-  uploaded_image_url?: any = null;
+  unCroppedSelectedFile?: File;
+  unCroppedImageUrl?: any = null;
+  croppedSelectedFile?: File;
+  croppedImageUrl?: any = null;
 
-  image_2_upload?: File;
   // webcam
   private trigger: Subject<any> = new Subject();
   access_camera_flag = false;
@@ -41,17 +41,26 @@ export class AppComponent implements OnInit {
     })
   }
 
-  // File Upload
-  onFileSelect(event: any) {
+  resetInput() {
     this.response_probability = null;
     this.response_explain = null;
+    this.unCroppedImageUrl = undefined;
+    this.unCroppedSelectedFile = undefined;
+    this.croppedImageUrl = undefined;
+    this.croppedSelectedFile = undefined;
+    this.pic_taken_flag = false
+  }
+
+  // File Upload
+  onFileSelect(event: any) {
+    this.resetInput()
     const reader = new FileReader();
-    this.selectedFile = event.target.files[0];
-    this.image_2_upload = this.selectedFile
+    this.unCroppedSelectedFile = event.target.files[0];
+    this.croppedSelectedFile = this.unCroppedSelectedFile
     reader.readAsDataURL(event.target.files[0]);
     console.log(event.target.files[0])
     reader.onload = (_event) => {
-      this.uploaded_image_url = reader.result;
+      this.unCroppedImageUrl = reader.result;
       this.pic_taken_flag = true
     }
   }
@@ -62,19 +71,19 @@ export class AppComponent implements OnInit {
   }
 
   public captureImg(webcamImage: any): void {
-    this.saveWebCamPictureAsFile(webcamImage)
+    this.unCroppedSelectedFile = this.savePictureAsFile(webcamImage.imageAsDataUrl)
     let reader = new FileReader()
-    if (this.selectedFile) {
-      reader.readAsDataURL(this.selectedFile)
+    if (this.unCroppedSelectedFile) {
+      reader.readAsDataURL(this.unCroppedSelectedFile)
       reader.onload = (_event) => {
-        this.uploaded_image_url = reader.result
+        this.unCroppedImageUrl = reader.result
         this.pic_taken_flag = true
       }
     }
   }
 
-  saveWebCamPictureAsFile(webcamImage: WebcamImage) {
-    const arr = webcamImage.imageAsDataUrl.split(",");
+  savePictureAsFile(url : any) {
+    const arr = url.split(",");
     // @ts-ignore
     const mime = arr[0].match(/:(.*?);/)[1];
     const bstr = atob(arr[1]);
@@ -83,8 +92,7 @@ export class AppComponent implements OnInit {
     while (n--) {
       u8arr[n] = bstr.charCodeAt(n);
     }
-    this.selectedFile = new File([u8arr], "uploaded image", {type: 'image/jpeg'})
-    this.image_2_upload = this.selectedFile
+    return new File([u8arr], "image", {type: 'image/jpeg'})
   }
 
   public get invokeObservable(): Observable<any> {
@@ -92,10 +100,7 @@ export class AppComponent implements OnInit {
   }
 
   redoPhoto() {
-    this.response_probability = null;
-    this.response_explain = null;
-    this.pic_taken_flag = false
-    this.selectedFile = undefined
+    this.resetInput();
   }
 
   accessCamera() {
@@ -117,11 +122,17 @@ export class AppComponent implements OnInit {
     }
   }
 
+  // Crop image
+  cropImg(e: ImageCroppedEvent) {
+    this.croppedImageUrl = e.base64;
+    this.croppedSelectedFile = this.savePictureAsFile(e.base64);
+  }
+
   // Communication with backend
   predict() {
-    if (this.image_2_upload) {
+    if (this.croppedSelectedFile) {
       this.loading_response_probability = true;
-      this.service.predict(this.image_2_upload)
+      this.service.predict(this.croppedSelectedFile)
         .subscribe(
           data => {
             this.response_probability = data
@@ -136,9 +147,9 @@ export class AppComponent implements OnInit {
   }
 
   explain() {
-    if (this.image_2_upload) {
+    if (this.croppedSelectedFile) {
       this.loading_response_explain = true;
-      this.service.explain(this.image_2_upload)
+      this.service.explain(this.croppedSelectedFile)
         .subscribe(
           data => {
             const reader = new FileReader();
@@ -155,27 +166,4 @@ export class AppComponent implements OnInit {
         )
     }
   }
-
-
-
-  imgChangeEvt: any = '';
-  cropImgPreview: any = '';
-  test = false;
-  cropImg(e: ImageCroppedEvent) {
-    this.cropImgPreview = e.base64;
-    this.image_2_upload = new File([this.cropImgPreview], "uploaded image", {type: 'image/jpeg'})
-    console.log(this.image_2_upload)
-  }
-  imgLoad() {
-    // display cropper tool
-  }
-  initCropper() {
-    // init cropper
-  }
-
-  imgFailed() {
-    // error msg
-  }
-
-
 }
