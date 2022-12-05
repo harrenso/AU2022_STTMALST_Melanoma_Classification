@@ -14,6 +14,7 @@ export class AppComponent implements OnInit {
   selectedFile?: File;
   uploaded_image_url?: any = null;
 
+  image_2_upload?: File;
   // webcam
   private trigger: Subject<any> = new Subject();
   access_camera_flag = false;
@@ -46,6 +47,7 @@ export class AppComponent implements OnInit {
     this.response_explain = null;
     const reader = new FileReader();
     this.selectedFile = event.target.files[0];
+    this.image_2_upload = this.selectedFile
     reader.readAsDataURL(event.target.files[0]);
     console.log(event.target.files[0])
     reader.onload = (_event) => {
@@ -82,6 +84,7 @@ export class AppComponent implements OnInit {
       u8arr[n] = bstr.charCodeAt(n);
     }
     this.selectedFile = new File([u8arr], "uploaded image", {type: 'image/jpeg'})
+    this.image_2_upload = this.selectedFile
   }
 
   public get invokeObservable(): Observable<any> {
@@ -116,9 +119,9 @@ export class AppComponent implements OnInit {
 
   // Communication with backend
   predict() {
-    if (this.selectedFile) {
+    if (this.image_2_upload) {
       this.loading_response_probability = true;
-      this.service.predict(this.selectedFile)
+      this.service.predict(this.image_2_upload)
         .subscribe(
           data => {
             this.response_probability = data
@@ -133,9 +136,9 @@ export class AppComponent implements OnInit {
   }
 
   explain() {
-    if (this.selectedFile) {
+    if (this.image_2_upload) {
       this.loading_response_explain = true;
-      this.service.explain(this.selectedFile)
+      this.service.explain(this.image_2_upload)
         .subscribe(
           data => {
             const reader = new FileReader();
@@ -160,7 +163,8 @@ export class AppComponent implements OnInit {
   test = false;
   cropImg(e: ImageCroppedEvent) {
     this.cropImgPreview = e.base64;
-    console.log(this.cropImgPreview)
+    this.image_2_upload = new File([this.cropImgPreview], "uploaded image", {type: 'image/jpeg'})
+    console.log(this.image_2_upload)
   }
   imgLoad() {
     // display cropper tool

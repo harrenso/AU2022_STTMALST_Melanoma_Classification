@@ -29,7 +29,26 @@
     <mat-spinner *ngIf="!uploaded_image_url" class="spinner"></mat-spinner>
     <div *ngIf="uploaded_image_url">
 
-      <img class="image" [src]="uploaded_image_url" alt="your uploaded picture"><br/>
+
+      <h5>Crop Image</h5>
+      <image-cropper class="image"
+                     [imageFile]="selectedFile"
+                     [maintainAspectRatio]="true"
+                     [aspectRatio]="1 / 1"
+                     [resizeToWidth]="300"
+                     format="jpeg"
+                     (imageCropped)="cropImg($event)"
+                     (imageLoaded)="imgLoad()"
+                     (cropperReady)="initCropper()"
+                     (loadImageFailed)="imgFailed()"
+                     [autoCrop]="true"
+      ></image-cropper>
+      <div>
+        <h5>Preview</h5>
+        <img [src]="cropImgPreview" />
+      </div>
+
+<!--      <img class="image" [src]="uploaded_image_url" alt="your uploaded picture"><br/>-->
 
       <button mat-flat-button color="primary"
               (click)="predict()"
@@ -57,36 +76,9 @@
 </div>
 
 
-<div class="container">
-  <div class="card">
-    <div class="card-header">
-      Angular 13 Crop Image Before Upload With Preview - Websolutionstuff
-    </div>
-    <div class="card-body">
-<!--      <input type="file" (change)="onFileSelect($event)" />-->
-      <div class="row" style="margin-top: 15px;">
-        <div class="text-center col-md-8">
-          <h5>Crop Image</h5>
-          <image-cropper class="image"
-            [imageFile]="selectedFile"
-            [maintainAspectRatio]="true"
-            [aspectRatio]="1 / 1"
-            [resizeToWidth]="300"
-            format="jpeg"
-            (imageCropped)="cropImg($event)"
-            (imageLoaded)="imgLoad()"
-            (cropperReady)="initCropper()"
-            (loadImageFailed)="imgFailed()"
-            [autoCrop]="true"
-          ></image-cropper>
-        </div>
-        <div class="text-center col-md-4">
-          <h5>Preview</h5>
-          <img [src]="cropImgPreview" />
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+
+
+
+
 
 
