@@ -11,7 +11,7 @@
            (change)="onFileSelect($event)" #fileInput>
 
     <!-- Webcam -->
-    <button mat-flat-button color="accent"
+    <button *ngIf="camera_available" mat-flat-button color="accent"
             (click)="photoButton()"
             disabled="{{loading_response_probability || loading_response_explain}}">
       {{button_msg}}
