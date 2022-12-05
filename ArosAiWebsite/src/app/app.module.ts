@@ -8,6 +8,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {HttpClientModule} from "@angular/common/http";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {WebcamModule} from "ngx-webcam";
+import {ImageCropperModule} from "ngx-image-cropper";
 @NgModule({
   declarations: [
     AppComponent
@@ -20,7 +21,8 @@ import {WebcamModule} from "ngx-webcam";
     MatInputModule,
     MatButtonModule,
     MatProgressSpinnerModule,
-    WebcamModule
+    WebcamModule,
+    ImageCropperModule
   ],
   providers: [],
   bootstrap: [AppComponent]

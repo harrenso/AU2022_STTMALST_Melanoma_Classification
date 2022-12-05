@@ -25,11 +25,27 @@
   </div>
 
   <!-- Results etc. -->
-  <div *ngIf="selectedFile && pic_taken_flag">
-    <mat-spinner *ngIf="!uploaded_image_url" class="spinner"></mat-spinner>
-    <div *ngIf="uploaded_image_url">
+  <div *ngIf="unCroppedSelectedFile && pic_taken_flag">
+    <mat-spinner *ngIf="!unCroppedImageUrl" class="spinner"></mat-spinner>
+    <div *ngIf="unCroppedImageUrl">
 
-      <img class="image" [src]="uploaded_image_url" alt="your uploaded picture"><br/>
+
+      <h5>Crop Image</h5>
+      <image-cropper class="image"
+                     [imageFile]="unCroppedSelectedFile"
+                     [maintainAspectRatio]="true"
+                     [aspectRatio]="1 / 1"
+                     [resizeToWidth]="300"
+                     format="jpeg"
+                     (imageCropped)="cropImg($event)"
+                     [autoCrop]="true"
+      ></image-cropper>
+      <div>
+        <h5>Preview</h5>
+        <img [src]="croppedImageUrl" />
+      </div>
+
+<!--      <img class="image" [src]="uploaded_image_url" alt="your uploaded picture"><br/>-->
 
       <button mat-flat-button color="primary"
               (click)="predict()"
@@ -55,5 +71,11 @@
     </div>
   </div>
 </div>
+
+
+
+
+
+
 
 
