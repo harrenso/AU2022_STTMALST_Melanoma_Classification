@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {BackendService} from "./backend.service";
 import {Observable, Subject} from "rxjs";
 import {WebcamImage} from "ngx-webcam";
+import {ImageCroppedEvent} from "ngx-image-cropper";
 
 @Component({
   selector: 'app-root',
@@ -32,7 +33,7 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit() {
-    navigator.mediaDevices.getUserMedia({video: true}).catch(err => {
+    navigator.mediaDevices.getUserMedia({video: {width:30,height:30, }}).catch(err => {
       if (err.toString().includes("Permission denied")|| err.message == "The request is not allowed by the user agent or the platform in the current context.") {
         this.camera_available = false
       }
@@ -150,6 +151,26 @@ export class AppComponent implements OnInit {
           }
         )
     }
+  }
+
+
+
+  imgChangeEvt: any = '';
+  cropImgPreview: any = '';
+  test = false;
+  cropImg(e: ImageCroppedEvent) {
+    this.cropImgPreview = e.base64;
+    console.log(this.cropImgPreview)
+  }
+  imgLoad() {
+    // display cropper tool
+  }
+  initCropper() {
+    // init cropper
+  }
+
+  imgFailed() {
+    // error msg
   }
 
 
