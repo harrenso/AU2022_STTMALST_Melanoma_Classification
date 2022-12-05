@@ -7,12 +7,11 @@
   <input hidden="hidden" type="file" accept="image/*"
          (change)="onFileSelect($event)" #fileInput>
 
-  <button *ngIf="!access_camera_flag" mat-flat-button (click)="accessCamera()">
-    Trun on webcam
+
+  <button mat-flat-button color="accent" (click)="photoButton()">
+    {{button_msg}}
   </button>
-  <button *ngIf="access_camera_flag" mat-flat-button (click)="getSnapshot()">
-    Take a photo
-  </button>
+
   <br/>
   <webcam
     [trigger]="invokeObservable"
@@ -23,9 +22,7 @@
 <div *ngIf="selectedFile && pic_taken_flag">
   <mat-spinner *ngIf="!uploaded_image_url" class="spinner"></mat-spinner>
   <div *ngIf="uploaded_image_url">
-
-    <button *ngIf="access_camera_flag" mat-flat-button color="accent" (click)="redoPhoto()">Retake the photo</button><br/>
-
+    
     <img class="image" [src]="uploaded_image_url" alt="your uploaded picture"><br/>
 
     <button mat-flat-button color="primary"
