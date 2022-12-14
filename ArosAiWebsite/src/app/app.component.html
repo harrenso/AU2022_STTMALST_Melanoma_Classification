@@ -1,0 +1,81 @@
+<div class="root">
+  <!-- Picture upload -->
+  <div>
+    <!-- Upload from File-->
+    <button type="button" mat-flat-button color="primary"
+            (click)="fileInput.click()"
+            disabled="{{loading_response_probability || loading_response_explain}}">
+      Choose a picture
+    </button>
+    <input hidden="hidden" type="file" accept="image/*"
+           (change)="onFileSelect($event)" #fileInput>
+
+    <!-- Webcam -->
+    <button *ngIf="camera_available" mat-flat-button color="accent"
+            (click)="photoButton()"
+            disabled="{{loading_response_probability || loading_response_explain}}">
+      {{button_msg}}
+    </button>
+    <br/>
+    <webcam
+      [trigger]="invokeObservable"
+      (imageCapture)="captureImg($event)"
+      *ngIf="!pic_taken_flag && access_camera_flag"
+    ></webcam>
+  </div>
+
+  <!-- Results etc. -->
+  <div *ngIf="unCroppedSelectedFile && pic_taken_flag">
+    <mat-spinner *ngIf="!unCroppedImageUrl" class="spinner"></mat-spinner>
+    <div *ngIf="unCroppedImageUrl">
+
+
+      <h5>Crop Image</h5>
+      <image-cropper class="image"
+                     [imageFile]="unCroppedSelectedFile"
+                     [maintainAspectRatio]="true"
+                     [aspectRatio]="1 / 1"
+                     [resizeToWidth]="300"
+                     format="jpeg"
+                     (imageCropped)="cropImg($event)"
+                     [autoCrop]="true"
+      ></image-cropper>
+      <div>
+        <h5>Preview</h5>
+        <img [src]="croppedImageUrl" />
+      </div>
+
+<!--      <img class="image" [src]="uploaded_image_url" alt="your uploaded picture"><br/>-->
+
+      <button mat-flat-button color="primary"
+              (click)="predict()"
+              disabled="{{loading_response_probability || loading_response_explain}}">
+        Predict
+      </button>
+
+      <div *ngIf="response_probability && !loading_response_probability">
+        <div>
+          Probability of melanoma {{ response_probability.probability | percent }}
+        </div>
+        <button mat-flat-button color="primary"
+                (click)="explain()"
+                disabled="{{loading_response_explain}}">
+          Explain
+        </button>
+        <div *ngIf="!loading_response_explain && response_explain">
+          <img class="image" [src]="response_explain" alt="your explained picture"><br/>
+        </div>
+        <mat-spinner *ngIf="loading_response_explain" class="spinner"></mat-spinner>
+      </div>
+      <mat-spinner *ngIf="loading_response_probability" class="spinner"></mat-spinner>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+

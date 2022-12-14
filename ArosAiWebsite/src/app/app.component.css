@@ -1,0 +1,19 @@
+.image{
+  height: 300px;
+}
+
+div {
+  text-align: center;
+}
+
+.spinner {
+  margin:0 auto;
+}
+
+.root {
+  margin: 20px;
+}
+
+button {
+  margin: 5px;
+}
