@@ -25,10 +25,9 @@ from flask import Response
 # initialize our Flask application and the Keras model
 app = flask.Flask(__name__)
 model = None
-model_path = "../git-ignored-models/model_17112022221102.h5" 
+model_path = "model_07122022180601.h5" 
 img_pixel = (224,224)
-explainer = lime_image.LimeImageExplainer()
-
+explainer = lime_image.LimeImageExplainer(42)
 np.random.seed(42)
 
 def setup_model():
@@ -78,23 +77,28 @@ def predict():
 
 			exp = explainer.explain_instance(image[0], 
                              model.predict, 
-                             hide_color=0, 
-                             num_samples=2000)
+                             hide_color=[0,1,0], 
+                             num_samples=1000)
 
 			plt.figure()
 			lime_image, mask = exp.get_image_and_mask(exp.top_labels[0], 
 												positive_only=False, 
+												num_features=6,
 												hide_rest=False,
-												min_weight=0.1)
+												min_weight=0.001)
 			plt.imshow(mark_boundaries(lime_image, mask))
 			plt.axis('off')
 			output = io.BytesIO()
 			FigureCanvas(plt.gcf()).print_png(output)
 
-			return Response(output.getvalue(), mimetype='image/png')
+			response = Response(output.getvalue(), mimetype='image/png')
+			response.headers.add('Access-Control-Allow-Origin', '*')
+			return response
 
+	response = flask.jsonify(data)
+	response.headers.add('Access-Control-Allow-Origin', '*')
 	# return the data dictionary as a JSON response
-	return flask.jsonify(data)
+	return response
 
 @app.route("/predict", methods=["POST"])
 def explain():
@@ -119,8 +123,10 @@ def explain():
 			# indicate that the request was a success
 			data["success"] = True
 
+	response = flask.jsonify(data)
+	response.headers.add('Access-Control-Allow-Origin', '*')
 	# return the data dictionary as a JSON response
-	return flask.jsonify(data)
+	return response
 
 # if this is the main thread of execution first load the model and
 # then start the server
