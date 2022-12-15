@@ -12,11 +12,13 @@ Oskar Pakuła <br>
 Renée Villiger <br>
 
 ## Delivery Overview
-- data_preperation_20192020 : Download and prepare the data
-- downsampling : Downsample the negative samples to avoid overfitting
-- EfficientNetB0_model : Transfer learning to identify melanoma in images
-- model_evaluation : Evaluate the performance using the hold out set
-- explainable_ai : Explainable AI to understand model predicitions
+The following files form part of the delivery. Please note that the notebooks should be executed in the order in which they are listed here.
+- utilities.py : Provides utilities used by the following
+- data_preperation_20192020.ipynb : Download and prepare the data
+- downsampling.ipynb : Downsample the negative samples to avoid overfitting
+- EfficientNetB0_model.ipynb : Transfer learning to identify melanoma in images
+- model_evaluation.ipynb : Evaluate the performance using the hold out set
+- explainable_ai.ipynb : Explainable AI to understand model predicitions
 
 ### Deployment 
 For the deployment, some further files have been supplied. For a overview over these files, please refer to the README in the corresponding folder. 
