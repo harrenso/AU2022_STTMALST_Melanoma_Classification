@@ -30,11 +30,7 @@ A website has been developed, which can be used by a user to access the model an
 A conda environment has been provided. Using a virtual environment makes sure that everyone is using the same dependencies, and that there are no version conflicts. This way problems only occuring on one machine are avoided. The environment has been modeled after the dependencies present on the GPU cluster of Aarhus University, since no new dependencies should be installed on the cluster. 
 
 #### How To: Create Environment
-1. Open terminal (in conda base enviroment)
-2. Paste: `conda env create -f {PATH}/environments.yml`
-3. Press enter
-4. Keep calm and wait a minute
-5. You should have new conda enviroment called: cluster_env : )
+Open your terminal and run `conda env create -f {PATH}/environments.yml`
 
 #### How To: Use the environment
 1. Activate the env: `conda activate cluster_env`
