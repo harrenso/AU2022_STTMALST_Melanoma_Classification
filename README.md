@@ -20,8 +20,29 @@ The following files form part of the delivery. Please note that the notebooks sh
 - model_evaluation.ipynb : Evaluate the performance using the hold out set
 - explainable_ai.ipynb : Explainable AI to understand model predicitions
 
+## Environment
+A conda environment has been provided. Using a virtual environment makes sure that everyone is using the same dependencies, and that there are no version conflicts. This way problems only occuring on one machine are avoided. The environment has been modeled after the dependencies present on the GPU cluster of Aarhus University, since no new dependencies should be installed on the cluster. 
+
+### How To: Create Environment
+1. Open terminal (in conda base enviroment)
+2. Paste: `conda env create -f {PATH}/environments.yml`
+3. Press enter
+4. Keep calm and wait a minute
+5. You should have new conda enviroment called: cluster_env : )
+
+### How To: Use the environment
+1. Activate the env: `conda activate cluster_env`
+2. Open jupyter notebook: `jupyter notebook`
+
+### How To: Update the environment
+1. Deactivate the activate environment: `conda deactivate`
+2. Update the environment: `conda env update -f {PATH}/environments.yml`
+3. Re-activate the environment: `conda activate cluster_env`
+
 ### Deployment 
 For the deployment, some further files have been supplied. For a overview over these files, please refer to the README in the corresponding folder. 
 
 ### Website
 A website has been developed, which can be used by a user to access the model and use the service. 
+
+
