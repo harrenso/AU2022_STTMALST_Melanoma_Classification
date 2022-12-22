@@ -1,6 +1,6 @@
 # Deployment 
 
-## You Get
+## You Get...
 ### Flask Server (flask_server.py)
 Run with `python flask_server.py`
 Exposes two services
@@ -14,6 +14,6 @@ You may additionally specify for which image specifically the request shall be p
 Run as jupyter notebook
 Send an "explain" request to the server and display the result once received
 
-## You Need
+## You Need...
 1. Model (specify in flask_server.py, default model is NOT given but you can get one from google drive!)
-2. Picture (you can change the path in both files or specify a param when calling simple_request.py, a default image is given)
+2. An image (you can change the path in both files or specify a param when calling simple_request.py, a default image is given)

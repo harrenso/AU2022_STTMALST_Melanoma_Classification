@@ -1,3 +1,15 @@
+'''
+This script includes a number of utility functions which are used in the scripts of the melanoma classification project. 
+Moving these functions to a seperate script, allowed the group to develop and compare new models faster, 
+by focusing only on those parts that are new.
+Additionally, the code of the notebooks is simplified. 
+
+Included functionalities
+- loading data
+- loading data in parallel
+- displaying images
+'''
+
 import pandas as pd # for data manipulation
 import numpy as np # for data manipulation
 import cv2 # for ingesting images
